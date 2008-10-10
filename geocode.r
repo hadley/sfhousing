@@ -19,7 +19,9 @@ geocode <- function(addresses) {
   read <- function(path) {
     suppressWarnings(read.csv(url(path), header = FALSE))
   }
-  ldply(paths, read, .progress = "text")
+  df <- ldply(paths, read, .progress = "text")
+  names(df) <- c("status", "accurary", "lat", "long")
+  df
 }
 
 addy <- function(row) {
