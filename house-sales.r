@@ -10,23 +10,24 @@ end <- as.Date("2008-10-05")
 
 sundays <- as.POSIXlt(seq.Date(start, end, "week"))
 base_url <- "http://www.sfgate.com/c/a"
-suffix <- "REHS.tb"
+suffix <- "REHS.tbl"
 
 pad <- function(x) sprintf("%02d", x)
 
-url <- paste(
+urls <- paste(
   base_url, 
   1900 + sundays$year, 
   pad(sundays$mon + 1), 
-  pad(sundays$mday + 1), 
+  pad(sundays$mday), 
   suffix,
   sep="/")
+
+cat(paste(urls, collapse="\n"), file = "paths.txt")
   
-  
-
-geo <- "http://maps.google.com/maps/geo?q="
-params <- "&output=xml&key=abcdefg
-
-
-URLencode
-1600+Amphitheatre+Parkway,+Mountain+View,+CA
+# 
+# geo <- "http://maps.google.com/maps/geo?q="
+# params <- "&output=xml&key=abcdefg
+# 
+# 
+# URLencode
+# 1600+Amphitheatre+Parkway,+Mountain+View,+CA
