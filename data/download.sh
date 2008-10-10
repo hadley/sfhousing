@@ -1,0 +1,1 @@
+wget -c -i ../paths.txt
