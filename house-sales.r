@@ -23,11 +23,3 @@ urls <- paste(
   sep="/")
 
 cat(paste(urls, collapse="\n"), file = "paths.txt")
-  
-# 
-# geo <- "http://maps.google.com/maps/geo?q="
-# params <- "&output=xml&key=abcdefg
-# 
-# 
-# URLencode
-# 1600+Amphitheatre+Parkway,+Mountain+View,+CA
