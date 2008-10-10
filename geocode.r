@@ -1,4 +1,4 @@
-key <- "ABQIAAAAPN96QmY7isANAfvtdMthyhQsA9GCW1kIOoNOJo5_u9fT-T-6hxRQIvilEas1eYl4qNAwjRRpNYnO4A"
+source("key.r")
 
 geocode_url <- function(address) {
   geo <- "http://maps.google.com/maps/geo?"
