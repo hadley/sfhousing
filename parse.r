@@ -15,17 +15,19 @@ tidy_week <- function(path) {
   df <- gsub("[a-z]+: ", "", df)
   records <- (seq_along(df) - 1) %/% (length(head) + 1)
   # table(table(records)) 
-  out <- do.call("rbind", tapply(df, records, c))
+  out <- do.call("data.frame", tapply(df, records, c))
   colnames(out) <- c(head, "empty")
   
-  out[, "price"] <- gsub("[$,]", "", out[, "price"])
+  out$price <- gsub("[$,]", "", out$price)
+  out$date <- gsub("data/", "", path)
   out
 }
 
 one <- tidy_week(paths[1])
 
 all <- llply(paths, tidy_week, .progress = "text")
-all <- llply(all, as.data.frame, .progress = "text")
+
+# Need to make rbind.fill faster!
 df <- do.call("rbind.fill", all)
 save(df, file="all.rdata")
 
