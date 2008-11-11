@@ -15,23 +15,30 @@ tidy_week <- function(path) {
   df <- gsub("[a-z]+: ", "", df)
   records <- (seq_along(df) - 1) %/% (length(head) + 1)
   # table(table(records)) 
-  out <- do.call("data.frame", tapply(df, records, c))
+  out <- do.call("rbind", tapply(df, records, c))
   colnames(out) <- c(head, "empty")
+  out <- data.frame(out, stringsAsFactors = FALSE)
   
-  out$price <- gsub("[$,]", "", out$price)
-  out$date <- gsub("data/", "", path)
+  out <- within(out, {
+    price <- gsub("[$,]", "", price)
+    date <- gsub("data/", "", gsub("\\.txt", "", path))
+    zip <- as.numeric(zip)
+    price <- as.numeric(price)
+    br <- as.numeric(br)
+    lsqft <- as.numeric(lsqft)
+    bsqft <- as.numeric(bsqft)
+    year <- as.numeric(year)
+  })
+  out$empty <- NULL
+  out$newcity <- NULL
+  out$rowid <- NULL
+  
   out
 }
 
 one <- tidy_week(paths[1])
 
 all <- llply(paths, tidy_week, .progress = "text")
-
-# Need to make rbind.fill faster!
 df <- do.call("rbind.fill", all)
-save(df, file="all.rdata")
-
-df <- df[, c("county", "city", "zip", "street", "price", "br", "lsqft" ,"bsqft","year" ,"datesold")]
-df
 
 write.table(df, file = "house-sales.csv", quote=F, row=F, sep=",")
