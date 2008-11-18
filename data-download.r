@@ -8,7 +8,7 @@
 
 # Get the data -----------------------
 start <- as.Date("2003-04-27")
-end <- as.Date("2008-10-05")
+end <- as.Date("2008-11-16")
 
 sundays <- as.POSIXlt(seq.Date(start, end, "week"))
 base_url <- "http://www.sfgate.com/c/a"

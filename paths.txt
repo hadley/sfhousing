@@ -283,3 +283,9 @@ http://www.sfgate.com/c/a/2008/09/14/REHS.tbl
 http://www.sfgate.com/c/a/2008/09/21/REHS.tbl
 http://www.sfgate.com/c/a/2008/09/28/REHS.tbl
 http://www.sfgate.com/c/a/2008/10/05/REHS.tbl
+http://www.sfgate.com/c/a/2008/10/12/REHS.tbl
+http://www.sfgate.com/c/a/2008/10/19/REHS.tbl
+http://www.sfgate.com/c/a/2008/10/26/REHS.tbl
+http://www.sfgate.com/c/a/2008/11/02/REHS.tbl
+http://www.sfgate.com/c/a/2008/11/09/REHS.tbl
+http://www.sfgate.com/c/a/2008/11/16/REHS.tbl
