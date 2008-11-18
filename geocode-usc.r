@@ -37,7 +37,7 @@ geocode <- function(street, city = "", state = "CA", zip = "") {
   df <- read.csv(con, header=F, stringsAsFactors = FALSE)
   close(con)
 
-  names(df) <- c("long", "lat", "quality", "match", "success", "error")
+  names(df) <- c("long", "lat", "quality", "match", "success")# , "error")
   df
 }
 
