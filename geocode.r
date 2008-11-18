@@ -1,5 +1,21 @@
 source("geocode-usc.r")
 
+if (FALSE) {
+  # Update addresses with new rows from house-sales
+  
+  sales <- read.csv("house-sales.csv", stringsAsFactors = FALSE)
+  ad  <- read.csv("addresses.csv", stringsAsFactors = FALSE)
+  
+  geo <- merge(sales, ad, by = c("street", "city", "zip"), all.x = T)
+  new <- subset(geo, is.na(quality))
+  new_ad <- unique(new[, c("street", "city", "zip")])
+  
+  library(plyr)
+  ad <- rbind.fill(ad, new_ad)
+  
+  write.table(ad, "addresses.csv", sep=",", row=F)  
+}
+
 # Create empty addresses csv file if necessary.
 if (!file.exists("addresses.csv")) {
   sales <- read.csv("house-sales.csv", stringsAsFactors = FALSE)
