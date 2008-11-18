@@ -1,4 +1,4 @@
-source("key.r")
+if (!exists("key")) message("You need to define a key variable containing the contents of your google maps API key")
 
 geocode_url <- function(address) {
   geo <- "http://maps.google.com/maps/geo?"
