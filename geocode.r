@@ -31,7 +31,7 @@ while(TRUE) {
   todo <- todo[!is.na(todo)]
   stopifnot(length(todo) > 0)
   loc <- do.call(geocode, addresses[todo, 1:3])
-  stopifnot(ncol(loc) == 6)
+  stopifnot(ncol(loc) == 5)
   stopifnot(nrow(loc) == 50)
 
   addresses[todo, names(loc)] <- loc
