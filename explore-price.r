@@ -66,3 +66,12 @@ qplot(year + (month - 1) / 12, value, data = deciles, geom = "line", group=decil
 
 # But most of the original pattern is a result of houses getting cheaper
 # so more houses fall into the cheap bracket.
+
+med <- rename(subset(deciles, decile == 5), c("value" = "median"))
+med$decile <- NULL
+
+# Relative to median house price, expensive houses have become more expensive
+# and cheaper houses cheaper:  the variation in prices has increased as a 
+# result of the housing crisis
+deciles <- merge(deciles, med)
+qplot(year + (month - 1) / 12, log10(value / median), data = deciles, geom = "line", group=decile)
