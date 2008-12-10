@@ -6,7 +6,7 @@ if (file.exists("geo.rdata")) {
 
   geo <- merge(sales, ad, by = c("street", "city", "zip"))
   geo$date <- as.Date(strptime(geo$date, "%Y-%m-%d"))
-  geo$datesold <- as.Date(strptime(geo$datesold, "%Y-%m-%d"))
+  geo$datesold <- as.Date(strptime(geo$datesold, "%m-%d-%y"))
   geo$price <- as.numeric(geo$price)
   
   save(geo, file = "geo.rdata")

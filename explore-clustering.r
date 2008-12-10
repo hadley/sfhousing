@@ -10,7 +10,10 @@ weird <- with(geo, is.na(lat) | is.na(long) | lat > 100 | long > -100)
 good <- subset(geo, !weird)
 loc <- good[c("lat", "long")]
 
+# This only takes a few seconds.
 clusters <- clara(loc, k = 100, trace = 1)
+# # Takes about 4 hours on my computer
+# system.time(clusters <- clara(loc, k = 1000, trace = 1))
 
 good$cl <- clusters$clustering
 
