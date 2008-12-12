@@ -2,15 +2,14 @@ library(ggplot2)
 source("date.r")
 source("explore-data.r")
 
-rlong <- c(-124.5, -113.5)
-rlat <- c(32.5, 42.5)
+# Look at quality first ------------------------------------------------------
 
-# Make map of region
-library(maps)
+as.data.frame(prop.table(table(geo$quality)) * 100)
 
-ca <- data.frame(map("state", xlim = rlong, ylim = rlat, plot = F)[c("x", "y")])
-camap <- geom_path(aes(x, y), data = ca, colour=alpha("grey40", 0.5), size = 0.5)
 
+# Experiment with binning ----------------------------------------------------
+
+source("map.r")
 qplot(long, lat, data = geo, xlim=rlong, ylim=rlat, geom="bin2d", binwidth = c(.2,.2)) + camap
 
 # Create 0.2 x 0.2 grid

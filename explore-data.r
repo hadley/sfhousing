@@ -4,7 +4,7 @@ if (file.exists("geo.rdata")) {
   ad <- read.csv("addresses.csv", stringsAsFactors = FALSE)
   sales <- read.csv("house-sales.csv", stringsAsFactors = FALSE)
 
-  geo <- merge(sales, ad, by = c("street", "city", "zip"))
+  geo <- merge(sales, ad, by = c("street", "city", "zip"), all.x = TRUE)
   geo$date <- as.Date(strptime(geo$date, "%Y-%m-%d"))
   geo$datesold <- as.Date(strptime(geo$datesold, "%m-%d-%y"))
   geo$price <- as.numeric(geo$price)
