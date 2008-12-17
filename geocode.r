@@ -21,7 +21,7 @@ if (!file.exists("addresses.csv")) {
 
   library(plyr)
   message("Adding new addresses and saving to disk...")
-  ad <- rbind.fill(ad, new_ad)
+  ad <- unique(rbind.fill(ad, new_ad))
 
   write.table(ad, "addresses.csv", sep=",", row=F)  
 }
