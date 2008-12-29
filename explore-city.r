@@ -24,16 +24,14 @@ big_cities <- subset(cities, freq > 2910) # 10 sales per week on avg
 qplot(freq / 1000, reorder(city, freq), data = subset(big_cities, rank(-freq) < 20), ylab = NULL, xlab = "Number of sales (thousands)")
 ggsave(file = "beautiful-data/graphics/big-cities.pdf", width = 4, height = 6)
 
-source("explore-inflation.r")
 # Only look at houses in big cities, reduces records to ~ 420,000
 inbig <- subset(geo, city %in% big_cities$city)
-
 
 # Summarise sales by day and city - 17,025 rows
 bigsum <- ddply(inbig, .(city, date), function(df) {
   data.frame(
     n = nrow(df), 
-    avg = mean(df$priceadj, na.rm = T)
+    avg = mean(df$price, na.rm = T)
   ) 
 }, .progress = "text")
 
@@ -85,11 +83,11 @@ sum_wide <- cast(sum_std, city ~ date)
 qplot(date, value, data = sum_std, geom = "line", colour = I(alpha("black", 1/2)), group = city, ylab="Proportional change in price", xlab=NULL)
 ggsave(file = "beautiful-data/graphics/cities-indexed.pdf", width = 8, height = 4)
 
-ggplot(sum_std, aes(date, value)) +
+ggplot(data = sum_std, aes(x = date, y = value)) +
   geom_hline(yintercept = 1, colour = "grey50") +
   geom_line() + 
   facet_wrap(~ city, ncol = 6) +
-  opts(axis.text.x = theme_blank(), axis.text.y = theme_blank())
+  labs(x = NULL, y = NULL)
 
 ggsave(file = "beautiful-data/graphics/cities-individual.pdf", width = 8, height = 11.5)
 
@@ -139,6 +137,8 @@ ggplot(sum_std2, aes(date, value)) +
   geom_smooth(size = 1, se = F, colour = "black")
 
 ggsave(file = "beautiful-data/graphics/cities-indexed-clustered.pdf", width = 10, height = 4)
+
+
 
 
 # Correlations --------------------------------------------------------------
