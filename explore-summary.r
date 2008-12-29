@@ -11,7 +11,7 @@ geo$month <- month(geo$date)
 geo$year <- year(geo$date)
 
 geo <- merge(geo, cpi, by = c("month", "year"), sort = F)
-geo$priceadj <- geo$price * geo$ratio
+geo$priceadj <- geo$price / geo$ratio
 
 # Add interest rates
 irates$date <- NULL
