@@ -1,11 +1,28 @@
 library(ggplot2)
 source("date.r")
+source("map.r")
 source("explore-data.r")
 
 # Look at quality first ------------------------------------------------------
 
 as.data.frame(prop.table(table(geo$quality)) * 100)
 
+# Explore distribution of various groupings ----------------------------
+qplot(long, lat, data = geo)
+
+labels <- list(
+  labs(x = NULL, y = NULL),
+  opts(axis.text.x = theme_blank()),
+  opts(axis.text.y = theme_blank())
+)
+
+loc <- ggplot(geo, aes(long, lat)) + labs(x = NULL, y = NULL)
+
+loc + geom_bin2d(bins = 100) + bayarea
+loc + geom_point(shape = ".") + bayarea
+
+loc + geom_point(aes(colour = county), shape = ".")
+loc + geom_point(shape = ".") + facet_wrap(~ city)
 
 # Experiment with binning ----------------------------------------------------
 
@@ -28,36 +45,46 @@ qplot(month, n, data=binned, geom="line", group=interaction(longr,latr))
 
 # Look at geocoded addresses in SF -------------------------------------------
 # Can we see how the city has grown?
-sf <- subset(geo, city == "San Francisco" & quality == "QUALITY_ADDRESS_RANGE_INTERPOLATION")
+sf <- subset(geo, county == "San Francisco County" & quality %in% c("QUALITY_ADDRESS_RANGE_INTERPOLATION", "QUALITY_EXACT_PARCEL_CENTROID"))
 
-limits <- list(
-  xlim(-122.5183, -122.3549), 
-  ylim(37.708, 37.8114),
-  opts(axis.text.x = theme_blank(), axis.text.y = theme_blank()),
-  xlab(NULL), ylab(NULL)
-)
-
-# 27000 houses
+# 25000 houses
 qplot(year, data = sf, binwidth = 1)
+qplot(year, data = sf, binwidth = 10)
 sf$decade <- paste(round_any(sf$year, 10, floor), "s", sep="")
 
-# Show each decade in it's own panel
-qplot(long, lat, data = subset(sf, year >= 1900), size=I(0.5), na.rm = T) + facet_wrap(~ decade) + limits
+ggplot(sf, aes(long, lat)) + geom_point(shape = ".") + labels
+ggsave(file = "beautiful-data/graphics/sf-geo.pdf", width = 8, height = 6)
 
-# Show all together, coloured by year
-qplot(long, lat, data = subset(sf, year >= 1900), size=I(1), colour=decade) + limits + scale_colour_brewer(pal = "Spectral")
-
-# Aggregate into bins and compute average year
+# Aggregate into bins and compute summaries -------------------
+# This seems to do the best job of showing where the new and old houses
+# are.
 sf <- within(sf, {
-  lat_round <- round_any(lat, 0.002)
-  long_round <- round_any(long, 0.002)
+  lat_round <- round_any(lat, 0.005)
+  long_round <- round_any(long, 0.005)
 })
 
 built <- ddply(sf, .(lat_round, long_round),  function(df) {
-  data.frame(n = nrow(df), avg_year = mean(df$year, na.rm = TRUE))
+  with(df, data.frame(
+    n = nrow(df), 
+    avg_year = mean(year, na.rm = TRUE),
+    sd = sd(year, na.rm = TRUE),
+    iqr = IQR(year, TRUE),
+    avg_price = mean(price, na.rm = TRUE)
+  ))
 }, .progress = "text")
+built <- subset(built, n >= 5)
 
-qplot(long_round, lat_round, data = built, fill = avg_year, geom="tile") + limits + scale_fill_gradient(low="white", high="red")
+grey_scale <- scale_fill_gradient(low="grey80", high="black")
 
-# Match with map
-# http://api.openstreetmap.org/api/0.5/map?bbox=-122.5183,37.708,-122.3549,37.8114
+qplot(long_round, lat_round, data = built, fill = n, geom="tile") + labels + grey_scale + labs(fill = "Number\nof houses")
+ggsave(file = "beautiful-data/graphics/sf-bin-n.pdf", width = 8, height = 6)
+
+qplot(long_round, lat_round, data = built, fill = iqr, geom="tile") + labels + grey_scale + labs(fill = "Inter-quartile\nrange")
+ggsave(file = "beautiful-data/graphics/sf-bin-iqr.pdf", width = 8, height = 6)
+
+qplot(long_round, lat_round, data = built, fill = avg_year, geom="tile") + labels + grey_scale + labs(fill = "Average\nyear\nbuilt")
+ggsave(file = "beautiful-data/graphics/sf-bin-built.pdf", width = 8, height = 6)
+
+qplot(long_round, lat_round, data = built, fill = sqrt(avg_price / 1e6), geom="tile") + labels + grey_scale + labs(fill = "Average\nprice")
+ggsave(file = "beautiful-data/graphics/sf-bin-price.pdf", width = 8, height = 6)
+

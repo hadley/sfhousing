@@ -12,3 +12,10 @@ camap <- c(
   xlim(rlong),
   ylim(rlat)
 )
+
+
+bayarea <- c(
+  geom_path(aes(x, y), data = ca, colour=alpha("grey40", 0.5), size = 0.5),
+  xlim(-123.5576, -120.5427),
+  ylim(35.80061, 38.84582)
+)
