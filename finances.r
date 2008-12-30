@@ -3,7 +3,7 @@ source("date.r")
 
 # Inflation ------------------------------------------------------
 
-cpi <- read.csv("cpi-west.csv")
+cpi <- read.csv("finances-cpi-west.csv")
 cpi <- rbind(cpi, 
   data.frame(year = 2008, month = 11, cpi = cpi$cpi[nrow(cpi)]))
 cpi$ratio <- cpi$cpi / cpi$cpi[1]
