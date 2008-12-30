@@ -1,44 +1,44 @@
-1|City
-2|Population, 2006 estimate  
-3|Population, percent change, April 1, 2000 to July 1, 2006  
-4|Population, 2000  
-5|Persons under 5 years old, percent, 2000  
-6|Persons under 18 years old, percent, 2000  
-7|Persons 65 years old and over, percent, 2000  
-8|Female persons, percent, 2000  
-9|White persons, percent, 2000 (a)  
-10|Black persons, percent, 2000 (a)  
-11|American Indian and Alaska Native persons, percent, 2000 (a)  
-12|Asian persons, percent, 2000 (a)  
-13|Native Hawaiian and Other Pacific Islander, percent, 2000 (a)  
-14|Persons reporting two or more races, percent, 2000  
-15|Persons of Hispanic or Latino origin, percent, 2000 (b)  
-16|Living in same house in 1995 and 2000, pct 5 yrs old & over  
-17|Foreign born persons, percent, 2000  
-18|Language other than English spoken at home, pct age 5, 2000  
-19|High school graduates, percent of persons age 25, 2000  
-20|Bachelors degree or higher, pct of persons age 25, 2000  
-21|Mean travel time to work (minutes), workers age 16, 2000  
-22|Housing units, 2000  
-23|Homeownership rate, 2000  
-24|Median value of owner-occupied housing units, 2000  
-25|Households, 2000  
-26|Persons per household, 2000  
-27|Median household income, 1999  
-28|Per capita money income, 1999  
-29|Persons below poverty, percent, 1999  
-30|Wholesale trade sales, 2002 (1000)  
-31|Retail sales, 2002 (1000)  
-32|Retail sales per capita, 2002  
-33|Accommodation and foodservices sales, 2002 (1000)  
-34|Total number of firms, 2002  
-35|Black-owned firms, percent, 2002  
-36|American Indian and Alaska Native owned firms, percent, 2002  
-37|Asian-owned firms, percent, 2002  
-38|Hispanic-owned firms, percent, 2002  
-39|Native Hawaiian and Other Pacific Islander owned firms, percent, 2002  
-40|Women-owned firms, percent, 2002  
-41|Land area, 2000 (square miles)  
-42|Persons per square mile, 2000  
-43|FIPS Code  
-44|Counties  
+1|city|City
+2|pop|Population, 2006 estimate  
+3|poppc|Population, percent change, April 1, 2000 to July 1, 2006  
+4|pop2000|Population, 2000  
+5|babies|Persons under 5 years old, percent, 2000  
+6|children|Persons under 18 years old, percent, 2000  
+7|elderly|Persons 65 years old and over, percent, 2000  
+8|female|Female persons, percent, 2000  
+9|white|White persons, percent, 2000 (a)  
+10|black|Black persons, percent, 2000 (a)  
+11|native|American Indian and Alaska Native persons, percent, 2000 (a)  
+12|asian|Asian persons, percent, 2000 (a)  
+13|islander|Native Hawaiian and Other Pacific Islander, percent, 2000 (a)  
+14|multir|Persons reporting two or more races, percent, 2000  
+15|hispanic|Persons of Hispanic or Latino origin, percent, 2000 (b)  
+16|stayput|Living in same house in 1995 and 2000, pct 5 yrs old & over  
+17|foreign|Foreign born persons, percent, 2000  
+18|nonenglish|Language other than English spoken at home, pct age 5, 2000  
+19|highschool|High school graduates, percent of persons age 25, 2000  
+20|grads|Bachelors degree or higher, pct of persons age 25, 2000  
+21|commute|Mean travel time to work (minutes), workers age 16, 2000  
+22|units|Housing units, 2000  
+23|ownership|Homeownership rate, 2000  
+24|housevalue|Median value of owner-occupied housing units, 2000  
+25|households|Households, 2000  
+26|housesold_size|Persons per household, 2000  
+27|housesold_income|Median household income, 1999  
+28|income|Per capita money income, 1999  
+29|poverty|Persons below poverty, percent, 1999  
+30|trade_sales|Wholesale trade sales, 2002 (1000)  
+31|retail_sales|Retail sales, 2002 (1000)  
+32|retail_sales_pc|Retail sales per capita, 2002  
+33|accomod|Accommodation and foodservices sales, 2002 (1000)  
+34|firms|Total number of firms, 2002  
+35|firms_black|Black-owned firms, percent, 2002  
+36|firms_native|American Indian and Alaska Native owned firms, percent, 2002  
+37|firms_asian|Asian-owned firms, percent, 2002  
+38|firms_hispanic|Hispanic-owned firms, percent, 2002  
+39|firms_islander|Native Hawaiian and Other Pacific Islander owned firms, percent, 2002  
+40|firms_female|Women-owned firms, percent, 2002  
+41|area|Land area, 2000 (square miles)  
+42|density|Persons per square mile, 2000  
+43|fips|FIPS Code  
+44|county|Counties  
