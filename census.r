@@ -11,4 +11,7 @@ city$V13 <- as.numeric(city$V13)
 fields <- read.table("census-city.flds", sep = "|", stringsAsFactors = F)
 names(city) <- fields$V2
 
+firms <- grep("firms", names(city))
+city[firms] <- lapply(city[firms], as.numeric)
+
 write.table(city, "census-city.csv", sep=",", row=F)

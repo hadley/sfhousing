@@ -4,17 +4,16 @@ source("date.r")
 source("explore-data.r")
 source("map.r")
 
-# Tidy up city names ---------------------------
 
-geo$city <- gsub(" +", " ", geo$city)
-geo$city <- gsub("`", "", geo$city)
+# Match up with census data ------------------------------------------
 
-# Name change
-geo$city[geo$city == "Blossom Hill"] <- "Blossom Valley"
-# Minor tweaks
-geo$city[geo$city == "Belvedere/tiburon"] <- "Belvedere/Tiburon"
-geo$city[geo$city == "Greater Downtown-metro Area"] <- "Downtown San Jose"
+city <- read.csv("census-city.csv", stringsAsFactors = FALSE)
+city_sales <- as.data.frame(table(geo$city))
+names(city_sales) <- c("city", "sales")
 
+missing <- merge(city, city_sales, by = "city", all = TRUE)
+missing <- subset(missing, is.na(pop))[c("city","sales")]
+subset(missing[order(-missing$sales), ], sales > 100)
 
 # Select the biggest cities in terms of numbers of sales ---------------------
 cities <- as.data.frame(table(geo$city))
@@ -54,10 +53,9 @@ qplot(date, avg, data = sf, geom = "line") + geom_smooth(method = "gam", formula
 # Smooth of log scale to reduce influence of outliers and then back-transform
 # 
 smooth <- function(df) {
-  model <- gam(log(avg) ~ s(as.numeric(date)), data = df) 
+  model <- gam(log(avg) ~ s(as.numeric(date)), data = df, na.action = na.exclude) 
   data.frame(date = df$date, value = exp(predict(model)))
 }
-
 
 smoothes <- ddply(bigsum, .(city), smooth)
 bigsum2 <- merge(bigsum, smoothes, by = c("city", "date"))
@@ -116,6 +114,7 @@ ggplot(sum2, aes(`2006-02-05`, `2008-11-09`)) +
   geom_text(aes(label = city), colour = alpha("black", 0.5), 
     size = 3, hjust = -0.05, angle = 45) + 
   geom_abline(colour = "grey50") + 
+  geom_abline(slope = -1, intercept = 3) + 
   coord_equal() +
   labs(x = "peak", y = "plummet")
 
@@ -138,8 +137,31 @@ ggplot(sum_std2, aes(date, value)) +
 
 ggsave(file = "beautiful-data/graphics/cities-indexed-clustered.pdf", width = 10, height = 4)
 
+# Try and explain with covariates from the census data -----------------
 
+city_sum <- sum2[c("city", "cl", "2006-02-05", "2008-11-09")]
+names(city_sum)[3:4] <- c("peak", "plummet")
 
+covar <- merge(city_sum, city, by = "city", all.x = TRUE)
+covar$drop <- with(covar, plummet - peak)
+cor(covar[, c(4:35, 48)], use="pairwise")[,33]
+
+# Most affected have:
+#   * lower incomes
+#   * fewer bachelors degrees
+#   * more babies & children
+#   * bigger households
+#   * longer commutes
+#   * fewer firms per capita
+#   * more multiracial people
+qplot(income, drop, data = covar)
+qplot(grads, drop, data = covar)
+qplot(babies, drop, data = covar)
+qplot(children, drop, data = covar)
+qplot(housesold_size, drop, data = covar)
+qplot(commute, drop, data = covar)
+qplot(firms / pop, drop, data = covar)
+qplot(multir, drop, data = covar)
 
 # Correlations --------------------------------------------------------------
 
