@@ -39,7 +39,7 @@ qplot(date, avg, data = bigsum, geom = "line", group = city, log="y")
 qplot(date, avg / 1e6, data = bigsum, geom = "line") + facet_wrap(~ city)
 
 qplot(date, avg / 1e6, data = bigsum, geom = "line", colour = I(alpha("black", 1/3)), group = city, ylab="Average sale price (millions)", xlab=NULL)
-ggsave(file = "beautiful-data/graphics/cities-price.pdf", width = 8, height = 4)
+ggsave(file = "beautiful-data/graphics/cities-price.pdf", width = 14, height = 4)
 
 
 
@@ -85,6 +85,8 @@ ggplot(data = sum_std, aes(x = date, y = value)) +
   geom_hline(yintercept = 1, colour = "grey50") +
   geom_line() + 
   facet_wrap(~ city, ncol = 6) +
+  scale_x_date(major = "2 years", minor = "year", format = "%y") +
+  opts(strip.text.x = theme_text(size = 8)) + 
   labs(x = NULL, y = NULL)
 
 ggsave(file = "beautiful-data/graphics/cities-individual.pdf", width = 8, height = 11.5)
@@ -97,7 +99,7 @@ ggsave(file = "beautiful-data/graphics/cities-individual.pdf", width = 8, height
 # perform hierarchical clustering with Ward's distance
 d <- dist(sum_wide[c("2006-02-05", "2008-11-09")])
 clustering <- hclust(d, "ward")
-plot(clustering, labels = sum_wide$city)
+# plot(clustering, labels = sum_wide$city)
 df <- data.frame(
   city = sum_wide$city, 
   cl = factor(cutree(clustering, 3))
@@ -114,7 +116,6 @@ ggplot(sum2, aes(`2006-02-05`, `2008-11-09`)) +
   geom_text(aes(label = city), colour = alpha("black", 0.5), 
     size = 3, hjust = -0.05, angle = 45) + 
   geom_abline(colour = "grey50") + 
-  geom_abline(slope = -1, intercept = 3) + 
   coord_equal() +
   labs(x = "peak", y = "plummet")
 
@@ -143,7 +144,29 @@ city_sum <- sum2[c("city", "cl", "2006-02-05", "2008-11-09")]
 names(city_sum)[3:4] <- c("peak", "plummet")
 
 covar <- merge(city_sum, city, by = "city", all.x = TRUE)
+
+# Compute and display drop from boom price
 covar$drop <- with(covar, plummet - peak)
+
+ggplot(covar, aes(drop, reorder(city, drop))) +
+  geom_vline(xintercept = 0, colour="grey50") +
+  geom_point() + 
+  scale_y_discrete(expand = c(0, 0.5)) + 
+  ylab(NULL)
+  
+sum_std3 <- merge(sum_std, covar[c("city", "drop")])
+sum_std3$dropr <- cut(sum_std3$drop, seq(-1, 0.2, by = 0.2))
+
+ggplot(sum_std3, aes(date, value)) +
+  facet_wrap( ~ dropr) + 
+  geom_hline(yintercept = 1, colour = "grey50") + 
+  geom_line(aes(group = city)) + 
+  scale_x_date(major = "years", minor = "6 months", format = "%y") + 
+  labs(x = NULL, y = NULL)
+ggsave(file = "beautiful-data/graphics/cities-indexed-grouped.pdf", width = 8, height = 5)
+
+
+
 cor(covar[, c(4:35, 48)], use="pairwise")[,33]
 
 # Most affected have:
@@ -155,13 +178,33 @@ cor(covar[, c(4:35, 48)], use="pairwise")[,33]
 #   * fewer firms per capita
 #   * more multiracial people
 qplot(income, drop, data = covar)
+ggsave(file = "beautiful-data/graphics/cities-income.pdf", width = 6, height = 6)
 qplot(grads, drop, data = covar)
+ggsave(file = "beautiful-data/graphics/cities-grads.pdf", width = 6, height = 6)
 qplot(babies, drop, data = covar)
 qplot(children, drop, data = covar)
 qplot(housesold_size, drop, data = covar)
 qplot(commute, drop, data = covar)
+ggsave(file = "beautiful-data/graphics/cities-commute.pdf", width = 6, height = 6)
 qplot(firms / pop, drop, data = covar)
 qplot(multir, drop, data = covar)
+
+# Geographic plot ----------------------------------------------------
+
+covar <- merge(covar, centres)
+ggplot(covar, aes(long, lat)) + 
+  bayarea + 
+  geom_point(aes(size = abs(drop), colour = factor(sign(drop)))) + 
+  scale_area("change", breaks = c(0.1, 0.25, 0.5, 0.75)) +
+  scale_colour_manual("direction", values = c("red", "black")) +
+  coord_cartesian(
+    xlim = expand_range(range(covar$long, na.rm = T), 0.2), 
+    ylim = expand_range(range(covar$lat, na.rm = T), 0.2)
+  ) +
+  labs(x = NULL, y = NULL) + 
+  scale_x_continuous(breaks = NA) +
+  scale_y_continuous(breaks = NA)
+ggsave(file = "beautiful-data/graphics/cities-geo-changes.pdf", width = 6, height = 6)
 
 # Correlations --------------------------------------------------------------
 

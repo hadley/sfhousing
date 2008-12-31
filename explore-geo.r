@@ -54,6 +54,7 @@ sf$decade <- paste(round_any(sf$year, 10, floor), "s", sep="")
 
 ggplot(sf, aes(long, lat)) + geom_point(shape = ".") + labels
 ggsave(file = "beautiful-data/graphics/sf-geo.pdf", width = 8, height = 6)
+ggsave(last_plot() + coord_flip(), file = "beautiful-data/graphics/sf-geo-big.pdf", width = 8, height = 11.5)
 
 # Aggregate into bins and compute summaries -------------------
 # This seems to do the best job of showing where the new and old houses
