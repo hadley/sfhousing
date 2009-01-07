@@ -194,9 +194,10 @@ qplot(multir, drop, data = covar)
 covar <- merge(covar, centres)
 ggplot(covar, aes(long, lat)) + 
   bayarea + 
-  geom_point(aes(size = abs(drop), colour = factor(sign(drop)))) + 
-  scale_area("change", breaks = c(0.1, 0.25, 0.5, 0.75)) +
-  scale_colour_manual("direction", values = c("red", "black")) +
+  geom_point(aes(size = abs(drop), shape = factor(sign(drop))), 
+    colour = alpha("black", 0.5)) + 
+  scale_area("change", breaks = c(0.1, 0.25, 0.5, 0.75), to = c(2, 6)) +
+  scale_shape("direction") +
   coord_cartesian(
     xlim = expand_range(range(covar$long, na.rm = T), 0.2), 
     ylim = expand_range(range(covar$lat, na.rm = T), 0.2)
@@ -204,7 +205,7 @@ ggplot(covar, aes(long, lat)) +
   labs(x = NULL, y = NULL) + 
   scale_x_continuous(breaks = NA) +
   scale_y_continuous(breaks = NA)
-ggsave(file = "beautiful-data/graphics/cities-geo-changes.pdf", width = 6, height = 6)
+ggsave(file = "beautiful-data/graphics/cities-geo-changes.pdf", width = 4, height = 4)
 
 # Correlations --------------------------------------------------------------
 
