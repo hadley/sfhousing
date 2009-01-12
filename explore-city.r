@@ -1,4 +1,5 @@
 library(ggplot2)
+library(mgcv)
 theme_set(theme_bw())
 source("date.r")
 source("explore-data.r")
@@ -27,12 +28,17 @@ ggsave(file = "beautiful-data/graphics/big-cities.pdf", width = 4, height = 6)
 inbig <- subset(geo, city %in% big_cities$city)
 
 # Summarise sales by day and city - 17,025 rows
-bigsum <- ddply(inbig, .(city, date), function(df) {
-  data.frame(
-    n = nrow(df), 
-    avg = mean(df$price, na.rm = T)
-  ) 
-}, .progress = "text")
+if (file.exists("bigsum.rdata")) {
+  load("bigsum.rdata") 
+} else {
+  bigsum <- ddply(inbig, .(city, date), function(df) {
+    data.frame(
+      n = nrow(df), 
+      avg = mean(df$price, na.rm = T)
+    ) 
+  }, .progress = "text")
+  save(bigsum, file = "bigsum.rdata")
+}
 
 qplot(date, n, data = bigsum, geom = "line", group = city, log="y")
 qplot(date, avg, data = bigsum, geom = "line", group = city, log="y")
@@ -146,16 +152,16 @@ names(city_sum)[3:4] <- c("peak", "plummet")
 covar <- merge(city_sum, city, by = "city", all.x = TRUE)
 
 # Compute and display drop from boom price
-covar$drop <- with(covar, plummet - peak)
+covar$price_drop <- with(covar, plummet - peak)
 
-ggplot(covar, aes(drop, reorder(city, drop))) +
+ggplot(covar, aes(price_drop, reorder(city, price_drop))) +
   geom_vline(xintercept = 0, colour="grey50") +
   geom_point() + 
-  scale_y_discrete(expand = c(0, 0.5)) + 
+  scale_y_discrete("Price drop", expand = c(0, 0.5)) + 
   ylab(NULL)
   
-sum_std3 <- merge(sum_std, covar[c("city", "drop")])
-sum_std3$dropr <- cut(sum_std3$drop, seq(-1, 0.2, by = 0.2))
+sum_std3 <- merge(sum_std, covar[c("city", "price_drop")])
+sum_std3$dropr <- cut(sum_std3$price_drop, seq(-1, 0.2, by = 0.2))
 
 ggplot(sum_std3, aes(date, value)) +
   facet_wrap( ~ dropr) + 
@@ -177,24 +183,24 @@ cor(covar[, c(4:35, 48)], use="pairwise")[,33]
 #   * longer commutes
 #   * fewer firms per capita
 #   * more multiracial people
-qplot(income, drop, data = covar)
+qplot(income, price_drop, data = covar)
 ggsave(file = "beautiful-data/graphics/cities-income.pdf", width = 6, height = 6)
-qplot(grads, drop, data = covar)
+qplot(grads, price_drop, data = covar)
 ggsave(file = "beautiful-data/graphics/cities-grads.pdf", width = 6, height = 6)
-qplot(babies, drop, data = covar)
-qplot(children, drop, data = covar)
-qplot(housesold_size, drop, data = covar)
-qplot(commute, drop, data = covar)
+qplot(babies, price_drop, data = covar)
+qplot(children, price_drop, data = covar)
+qplot(housesold_size, price_drop, data = covar)
+qplot(commute, price_drop, data = covar)
 ggsave(file = "beautiful-data/graphics/cities-commute.pdf", width = 6, height = 6)
-qplot(firms / pop, drop, data = covar)
-qplot(multir, drop, data = covar)
+qplot(firms / pop, price_drop, data = covar)
+qplot(multir, price_drop, data = covar)
 
 # Geographic plot ----------------------------------------------------
 
 covar <- merge(covar, centres)
 ggplot(covar, aes(long, lat)) + 
   bayarea + 
-  geom_point(aes(size = abs(drop), shape = factor(sign(drop))), 
+  geom_point(aes(size = abs(price_drop), shape = factor(sign(price_drop))), 
     colour = alpha("black", 0.5)) + 
   scale_area("change", breaks = c(0.1, 0.25, 0.5, 0.75), to = c(2, 6)) +
   scale_shape("direction") +
