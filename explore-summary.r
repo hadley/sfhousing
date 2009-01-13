@@ -18,7 +18,10 @@ irates$date <- NULL
 geo <- merge(geo, irates, by = c("month", "year"), sort = F)
 
 # Basic summaries of data --------------------------------------
-daily <- ddply(geo, .(date), function(df) {
+
+consistent <- subset(geo, !(county %in% c("Monterey County", "San Benito County", "San Joaquin County", "Santa Cruz County")))
+
+daily <- ddply(consistent, .(date), function(df) {
   data.frame(
     n = nrow(df),
     avg_priceadj = mean(df$priceadj, na.rm = TRUE), 
