@@ -152,7 +152,7 @@ names(city_sum)[3:4] <- c("peak", "plummet")
 covar <- merge(city_sum, city, by = "city", all.x = TRUE)
 
 # Compute and display drop from boom price
-covar$price_drop <- with(covar, plummet - peak)
+covar$price_drop <- with(covar, peak - plummet)
 
 ggplot(covar, aes(price_drop, reorder(city, price_drop))) +
   geom_vline(xintercept = 0, colour="grey50") +
@@ -161,7 +161,7 @@ ggplot(covar, aes(price_drop, reorder(city, price_drop))) +
   ylab(NULL)
   
 sum_std3 <- merge(sum_std, covar[c("city", "price_drop")])
-sum_std3$dropr <- cut(sum_std3$price_drop, seq(-1, 0.2, by = 0.2))
+sum_std3$dropr <- cut(sum_std3$price_drop, fullseq(range(sum_std3$price_drop), 0.2))
 
 ggplot(sum_std3, aes(date, value)) +
   facet_wrap( ~ dropr) + 
@@ -202,7 +202,7 @@ ggplot(covar, aes(long, lat)) +
   bayarea + 
   geom_point(aes(size = abs(price_drop), shape = factor(sign(price_drop))), 
     colour = alpha("black", 0.5)) + 
-  scale_area("change", breaks = c(0.1, 0.25, 0.5, 0.75), to = c(2, 6)) +
+  scale_area("drop", breaks = c(0.1, 0.25, 0.5, 0.75), to = c(2, 6)) +
   scale_shape("direction") +
   coord_cartesian(
     xlim = expand_range(range(covar$long, na.rm = T), 0.2), 

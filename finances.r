@@ -6,8 +6,8 @@ source("date.r")
 cpi <- read.csv("finances-cpi-west.csv")
 cpi <- rbind(cpi, 
   data.frame(year = 2008, month = 11, cpi = cpi$cpi[nrow(cpi)]))
-cpi$ratio <- cpi$cpi / cpi$cpi[1]
 cpi <- subset(cpi, (year == 2003 & month >= 4) | year > 2003)
+cpi$ratio <- cpi$cpi / cpi$cpi[1]
 
 qplot(year + month / 12, ratio, data = cpi, geom = "line", ylab = "Inflation") + xlab(NULL)
 ggsave(file = "beautiful-data/graphics/daily-cpi.pdf", width = 8, height = 4)
