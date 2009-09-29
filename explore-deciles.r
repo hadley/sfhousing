@@ -1,8 +1,8 @@
-# library(ggplot2)
-# source("date.r")
-# source("explore-data.r")
-# 
 # Explore the difference between the cheapest and most expensive houses
+
+library(ggplot2)
+source("date.r")
+source("explore-data.r")
 
 
 # Calculate monthly deciles
@@ -10,13 +10,11 @@ midmonth <- function(date) {
   mday(date) <- 15
   date
 }
-deciles <- ddply(geo, .(date = midmonth(date)), function(df) {
-  data.frame(
-    decile = seq_len(9),
-    value = quantile(df$priceadj, seq(0.1, 0.9, by = 0.1)),
-    med = median(df$priceadj)
-  )
-}, .progress = "text")
+deciles <- ddply(geo, .(date = midmonth(date)), summarise,
+  decile = seq_len(9),
+  value = quantile(price, seq(0.1, 0.9, by = 0.1), na.rm = T),
+  med = median(price), 
+  .progress = "text")
 
 ggplot(deciles, aes(date, value / 1e6)) +
   geom_line(aes(group = decile, colour = decile)) +
